@@ -1,0 +1,395 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Cloud7CMS.Areas.Identity.Data
+
+@inject SignInManager<Cloud7CMSUser> SignInManager
+@inject UserManager<Cloud7CMSUser> UserManager
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />      
+    <title>Cloud7 CMS</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="~/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    
+    @*<link rel="stylesheet" href="~/Cloud7CMS.styles.css" asp-append-version="true" />*@
+    
+    <!-- DataTables -->
+    <link rel="stylesheet" href="~/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+
+    <!-- Add this in the head section of your HTML -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+
+    <!-- REQUIRED SCRIPTS -->
+    <!-- jQuery -->
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- overlayScrollbars -->
+    <script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/dist/js/adminlte.js"></script>
+
+    <!-- PAGE PLUGINS -->
+    <!-- jQuery Mapael -->
+    <script src="~/plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
+    <script src="~/plugins/raphael/raphael.min.js"></script>
+    <script src="~/plugins/jquery-mapael/jquery.mapael.min.js"></script>
+    <script src="~/plugins/jquery-mapael/maps/usa_states.min.js"></script>
+    <!-- ChartJS -->
+    <script src="~/plugins/chart.js/Chart.min.js"></script>
+
+</head>
+<body class="hold-transition  sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+    <div class="wrapper">
+
+        <!-- Preloader -->
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__wobble" src="~/dist/img/cloud7logo.png" alt="cloud7logo" height="60" width="60">
+        </div>
+
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand left_col">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="/Home/Index" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="#" class="nav-link">Contact</a>
+                </li>
+            </ul>
+
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <!-- Navbar Search -->
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="navbar-search" href="#" role="button">
+                        <i class="fas fa-search"></i>
+                    </a>
+                    <div class="navbar-search-block">
+                        <form class="form-inline">
+                            <div class="input-group input-group-sm">
+                                <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                                <div class="input-group-append">
+                                    <button class="btn btn-navbar" type="submit">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                    <button class="btn btn-navbar" type="button" data-widget="navbar-search">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </li>
+
+                <!-- Messages Dropdown Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <i class="far fa-comments"></i>
+                        <span class="badge badge-danger navbar-badge">3</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <a href="#" class="dropdown-item">
+                            <!-- Message Start -->
+                           @* <div class="media">
+                                <img src="~/dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                                <div class="media-body">
+                                    <h3 class="dropdown-item-title">
+                                        Brad Diesel
+                                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                                    </h3>
+                                    <p class="text-sm">Call me whenever you can...</p>
+                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                </div>
+                            </div>*@
+                            <!-- Message End -->
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <!-- Message Start -->
+                           
+                            <!-- Message End -->
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <!-- Message Start -->
+                            
+                            <!-- Message End -->
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+                    </div>
+                </li>
+                <!-- Notifications Dropdown Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <i class="far fa-bell"></i>
+                        <span class="badge badge-warning navbar-badge">15</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        @*<span class="dropdown-item dropdown-header">15 Notifications</span>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-envelope mr-2"></i> 4 new messages
+                            <span class="float-right text-muted text-sm">3 mins</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-users mr-2"></i> 8 friend requests
+                            <span class="float-right text-muted text-sm">12 hours</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-file mr-2"></i> 3 new reports
+                            <span class="float-right text-muted text-sm">2 days</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>*@
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar left_col elevation-4">
+            <!-- Brand Logo -->
+            <a href="/Home/Index" class="brand-link">
+                <img src="~/dist/img/cloud7logobig.png" alt="Cloud7 Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <span class="brand-text font-weight-light">Cloud 7 CMS</span>
+            </a>
+
+            <!-- Sidebar -->
+            <div class="sidebar">                               
+
+                <!-- Sidebar user panel (optional) -->  
+
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                   <div class="image">
+                        <img src="~/dist/img/avatar.png" class="img-circle elevation-2" alt="User Image">
+                    </div>
+                    <div class="info">
+                        <a href="#" class="d-block"> Hello
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                @UserManager.GetUserName(User).Substring(0, @UserManager.GetUserName(User).IndexOf('@')) 
+                            }
+                        </a>
+                    </div>                        
+                </div>
+
+@*                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <a id="manage" class="nav-link text-hark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                    }
+                </div>
+*@
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                        <ul class="nav nav-pills nav-sidebar flex-column">
+                                <li class="nav-item">                                    
+                                    <a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+                                    <i class="nav-icon fas fa-user"></i>
+                                        Profile
+                                    </a>
+                                </li>
+                                <li class="nav-item">                                    
+                                    <a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Logout" title="Logout">
+                                    <i class="nav-icon fas fa-lock"></i>
+                                        Logout
+                                    </a>
+                                </li>
+                        </ul>
+                        }
+                        else
+                        {
+                        <ul class="nav nav-pills nav-sidebar flex-column">
+                                <li class="nav-item">
+                                    
+                                    <a class="nav-link text-white" id="register" asp-area="Identity" asp-page="/Account/Register">
+                                        <i class="nav-icon fas fa-chart-line"></i>
+                                        Register
+                                     </a>
+                                </li>
+                                <li class="nav-item">                                    
+                                    <a class="nav-link text-white" id="login" asp-area="Identity" asp-page="/Account/Login">
+                                        <i class="nav-icon fas fa-chart-line"></i>
+                                        Login
+                                     </a>
+                                </li>
+                        </ul>
+                          
+                        }
+                </div>
+            
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <!-- Add icons to the links using the .nav-icon class
+                             with font-awesome or any other icon font library -->
+                        <li class="nav-item menu-open">
+                            <a href="#" class="nav-link active">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
+                                    Dashboards
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview" >
+                                <li class="nav-item">
+                                    <a href="/Home/GPDataViewer" class="nav-link">
+                                        <i class="nav-icon fas fa-chart-line"></i>
+                                        <p style ="color: white;">Grameenphone</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/Banglalink/BLDataViewer" class="nav-link">
+                                        <i class="nav-icon fas fa-chart-line"></i>
+                                        <p style="color: white;">Banglalink</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/Robi/RobiDataViewer" class="nav-link">
+                                        <i class="nav-icon fas fa-chart-line"></i>
+                                        <p style="color: white;">Robi</p>
+                                    </a>
+                                </li>
+
+                                 <li class="nav-item">
+                                    <a href="/Bkash/BKDataViewer" class="nav-link">
+                                        <i class="nav-icon fas fa-chart-line"></i>
+                                        <p style="color: white;">bKash</p>
+                                    </a>
+                                </li>
+
+                               
+                            </ul>
+                        </li>
+
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item menu-open">
+                                <a href="#" class="nav-link active">
+                                    <i class="nav-icon fas fa-edit"></i>
+                                    <p>
+                                        Admin Panel
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="/Home/GPDataEditor" class="nav-link">
+                                            <i class="nav-icon fas fa-table"></i>
+                                            <p style="color: white;">Grameenphone</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/Banglalink/BLDataEditor" class="nav-link">
+                                            <i class="nav-icon fas fa-table"></i>
+                                            <p style="color: white;">Banglalink</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/Robi/RobiDataEditor" class="nav-link">
+                                            <i class="nav-icon fas fa-table"></i>
+                                            <p style="color: white;">Robi</p>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a href="/Bkash/BKDataEditor" class="nav-link">
+                                            <i class="nav-icon fas fa-table"></i>
+                                            <p style="color: white;">bKash</p>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item">                                   
+                                        <a class="nav-link text-white" asp-area="Identity" asp-page="/Account/ManageUserRole" title="Manage">
+                                            <i class="nav-icon fas fa-table"></i>
+                                            <p style="color: white;">Role Management</p>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </li>
+                        }
+
+                    </ul>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+
+        <div class="content-wrapper">           
+            <!--Render Body-->
+            <div class="container">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                    <!-- Render scripts section -->
+                    @RenderSection("Scripts", required: false)
+                </main>
+            </div>
+        </div>
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+  
+
+      
+      @*  <!-- Bootstrap CSS (Add this in the head section of your HTML) -->
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+        <!-- jQuery (Add this before your script) -->
+          <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+        <!-- Bootstrap JS (Add this after jQuery) -->
+         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>*@
+
+        <!-- /.control-sidebar -->
+       
+        <!-- Main Footer -->
+        <footer class="main-footer">
+            <strong>Copyright &copy; @DateTime.Now.Year <a href="https://www.cloud7tech.com/" style="color:#2A3F54">Cloud 7 Limited.</a>.</strong>
+            All rights reserved.
+            <div class="float-right d-none d-sm-inline-block">
+                <b>Version</b> 1.0.0
+            </div>
+        </footer>
+    </div>
+
+    <!-- ./wrapper -->
+
+
+   
+   
+</body>
+</html>

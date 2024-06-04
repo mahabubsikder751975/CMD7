@@ -1,0 +1,132 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+  color:black;
+  /* font-family: "Helvetica Neue"; */
+  font-family: "Segoe UI Semibold"; 
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.471;  
+}
+
+table.jambo_table {
+  border: 1px solid rgba(221,221,221,0.78)
+}
+
+table.jambo_table thead {
+  background: rgba(52,73,94,0.94);
+  font-size: 13px;
+  color: #ECF0F1;
+}
+
+table.jambo_table tbody tr:hover td {
+  background: rgba(38,185,154,0.07);
+  border-top: 1px solid rgba(38,185,154,0.11);
+  border-bottom: 1px solid rgba(38,185,154,0.11)
+}
+
+table.jambo_table tbody tr.selected {
+  background: rgba(38,185,154,0.16)
+}
+
+table.jambo_table tbody tr.selected td {
+  border-top: 1px solid rgba(38,185,154,0.4);
+  border-bottom: 1px solid rgba(38,185,154,0.4)
+}
+.left_col {
+    background: #2A3F54;
+}
+
+.navbar-dark {
+  background-color: rgba(52,73,94,0.94);
+  border-color: #4b545c;  
+}
+a.navbar-brand[b-yicbig9tbl] {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+a[b-yicbig9tbl] {
+    color: #fff;
+}
+
+
+
+.nav-pills .nav-link.active[b-yicbig9tbl], .nav-pills .show > .nav-link[b-yicbig9tbl] {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.border-top[b-yicbig9tbl] {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom[b-yicbig9tbl] {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow[b-yicbig9tbl] {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy[b-yicbig9tbl] {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+.footer[b-yicbig9tbl] {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: rgba(52,73,94,0.94);
+    border-color: #4b545c;    
+    box-shadow: none;
+}
+
+.btn-secondary {
+  color: #fff;
+  background-color: rgba(52,73,94,0.94);
+  border-color: #4b545c;   
+  box-shadow: none;  
+}
+/* Add scroll bar to the dropdown */
+#checkboxDropdown {
+    max-height: 150px; /* Adjust this value based on your preference */
+    overflow-y: auto; /* Enable vertical scrollbar */
+    padding: 5px;
+    max-width: auto;
+}
+
+/* Set a fixed height for the table container */
+#tableContainer {
+    max-height: 300px; /* Adjust this value based on your preference */
+    overflow-y: auto; /* Enable vertical scrollbar */
+}
+
+.btn:hover, .form-check:hover, th:hover {
+  background-color: #007bff;
+  color: #fff;
+  border-radius:5px;
+}

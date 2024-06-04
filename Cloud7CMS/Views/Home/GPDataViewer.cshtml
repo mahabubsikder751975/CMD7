@@ -1,0 +1,1534 @@
+﻿
+
+<!-- Main content -->
+<section class="content">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Grameenphone</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/Home/Index">Home</a></li>
+                        <li class="breadcrumb-item active">Dashboards/Grameenphone</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" class="form-control" id="startDate">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="endDate">End Date:</label>
+                    <input type="date" class="form-control" id="endDate">
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="selectedOptions">Select options:</label>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Select services
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="checkboxDropdown">
+                            <!-- Checkbox options will be dynamically populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>        
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <div class="col-md-3">
+            <button type="button" class="btn btn-primary" id="submitBtn">Submit</button>
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+    
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div><button type="submit" class="btn btn-primary" style="float:right" id="expdataBtn">Export Count Data to Excel</button></div>
+                <div><button type="submit" class="btn btn-primary" style="float:right" id="expdetailsdataBtn">Export Details Data to Excel</button></div>
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+
+
+
+
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">New Activation</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body tableContainer">
+                    <table id="activationTable" class="table table-striped jambo_table bulk_action table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Subscription Date</th>
+                                <th>Service Description</th>
+                                <th>Total Base Count (Cumulative)</th>
+                                <th>Charged Amount</th>
+                                <th>Current Activation Count</th>
+                                <th>Revenue (BDT)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>             
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+
+
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Deactivations</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table id="churnTable" class="table table-striped jambo_table bulk_action table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Deactivation Date</th>
+                                <th>Service Description</th>
+                                <th>Current Churn Count</th>
+                                <th>Total Churn Count (Cumulative)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+
+
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Renewals</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table id="renewalTable" class="table table-striped jambo_table bulk_action table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Renewal Date</th>
+                                <th>Service Description</th>
+                                <th>Charged Amount</th>
+                                <th>Success Count</th>
+                                <th>Revenue (BDT)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+
+    @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("FunBoxManager")))
+    {
+        <!--Funbox-->
+        <div class="container-fluid" id="contfunbox" style="display: none;">
+            <div class="row mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Funbox Renewal Traffic</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="funboxTable" class="table table-striped jambo_table bulk_action table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Report Date</th>
+                                    <th>Service Description</th>
+                                    <th>[00-01AM]</th>
+                                    <th>[01-02AM]</th>
+                                    <th>[02-03AM]</th>
+                                    <th>[03-04AM]</th>
+                                    <th>[04-05AM]</th>
+                                    <th>[05-06AM]</th>
+                                    <th>[06-07AM]</th>
+                                    <th>[07-08AM]</th>
+                                    <th>[08-09AM]</th>
+                                    <th>[09-10AM]</th>
+                                    <th>[10-11AM]</th>
+                                    <th>[11-12PM]</th>
+                                    <th>[12-01PM]</th>
+                                    <th>[01-02PM]</th>
+                                    <th>[02-03PM]</th>
+                                    <th>[03-04PM]</th>
+                                    <th>[04-05PM]</th>
+                                    <th>[05-06PM]</th>
+                                    <th>[06-07PM]</th>
+                                    <th>[07-08PM]</th>
+                                    <th>[08-09PM]</th>
+                                    <th>[09-10PM]</th>
+                                    <th>[10-11PM]</th>
+                                    <th>[11-12AM]</th>
+                                    <th>[Total]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+        <!-- /.container-fluid -->
+    }
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+    {
+        <!--MX Player-->
+        <div class="container-fluid" id="contmxplayer">
+            <div class="row mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">MX Player Renewal Traffic</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="mxplayerTable" class="table table-striped jambo_table bulk_action table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Report Date</th>
+                                    <th>Service Description</th>
+                                    <th>[00-01AM]</th>
+                                    <th>[01-02AM]</th>
+                                    <th>[02-03AM]</th>
+                                    <th>[03-04AM]</th>
+                                    <th>[04-05AM]</th>
+                                    <th>[05-06AM]</th>
+                                    <th>[06-07AM]</th>
+                                    <th>[07-08AM]</th>
+                                    <th>[08-09AM]</th>
+                                    <th>[09-10AM]</th>
+                                    <th>[10-11AM]</th>
+                                    <th>[11-12PM]</th>
+                                    <th>[12-01PM]</th>
+                                    <th>[01-02PM]</th>
+                                    <th>[02-03PM]</th>
+                                    <th>[03-04PM]</th>
+                                    <th>[04-05PM]</th>
+                                    <th>[05-06PM]</th>
+                                    <th>[06-07PM]</th>
+                                    <th>[07-08PM]</th>
+                                    <th>[08-09PM]</th>
+                                    <th>[09-10PM]</th>
+                                    <th>[10-11PM]</th>
+                                    <th>[11-12AM]</th>
+                                    <th>[Total]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+        <!--Mag Player-->
+        <div class="container-fluid" id="contmagplus">
+            <div class="row mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Mag Plus Renewal Traffic</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="magplusTable" class="table table-striped jambo_table bulk_action table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Report Date</th>
+                                    <th>Service Description</th>
+                                    <th>[00-01AM]</th>
+                                    <th>[01-02AM]</th>
+                                    <th>[02-03AM]</th>
+                                    <th>[03-04AM]</th>
+                                    <th>[04-05AM]</th>
+                                    <th>[05-06AM]</th>
+                                    <th>[06-07AM]</th>
+                                    <th>[07-08AM]</th>
+                                    <th>[08-09AM]</th>
+                                    <th>[09-10AM]</th>
+                                    <th>[10-11AM]</th>
+                                    <th>[11-12PM]</th>
+                                    <th>[12-01PM]</th>
+                                    <th>[01-02PM]</th>
+                                    <th>[02-03PM]</th>
+                                    <th>[03-04PM]</th>
+                                    <th>[04-05PM]</th>
+                                    <th>[05-06PM]</th>
+                                    <th>[06-07PM]</th>
+                                    <th>[07-08PM]</th>
+                                    <th>[08-09PM]</th>
+                                    <th>[09-10PM]</th>
+                                    <th>[10-11PM]</th>
+                                    <th>[11-12AM]</th>
+                                    <th>[Total]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+    }
+    @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("FunBoxManager")))
+    {
+        <!--Footballers Live-->
+        <div class="container-fluid" id="contfootballers" style="display: none;">
+            <div class="row mt-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        Footballers Live
+                        Renewal Traffic
+                    </h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table id="footballersTable" class="table table-striped jambo_table bulk_action table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Report Date</th>
+                                <th>Service Description</th>
+                                <th>[00-01AM]</th>
+                                <th>[01-02AM]</th>
+                                <th>[02-03AM]</th>
+                                <th>[03-04AM]</th>
+                                <th>[04-05AM]</th>
+                                <th>[05-06AM]</th>
+                                <th>[06-07AM]</th>
+                                <th>[07-08AM]</th>
+                                <th>[08-09AM]</th>
+                                <th>[09-10AM]</th>
+                                <th>[10-11AM]</th>
+                                <th>[11-12PM]</th>
+                                <th>[12-01PM]</th>
+                                <th>[01-02PM]</th>
+                                <th>[02-03PM]</th>
+                                <th>[03-04PM]</th>
+                                <th>[04-05PM]</th>
+                                <th>[05-06PM]</th>
+                                <th>[06-07PM]</th>
+                                <th>[07-08PM]</th>
+                                <th>[08-09PM]</th>
+                                <th>[09-10PM]</th>
+                                <th>[10-11PM]</th>
+                                <th>[11-12AM]</th>
+                                <th>[Total]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </div>
+    </div>
+    }
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+    {
+        <!--eMagazine-->
+        <div class="container-fluid" id="contemagazine">
+            <div class="row mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            eMagazine Renewal Traffic
+                        </h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="emagazineTable" class="table table-striped jambo_table bulk_action table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Report Date</th>
+                                    <th>Service Description</th>
+                                    <th>[00-01AM]</th>
+                                    <th>[01-02AM]</th>
+                                    <th>[02-03AM]</th>
+                                    <th>[03-04AM]</th>
+                                    <th>[04-05AM]</th>
+                                    <th>[05-06AM]</th>
+                                    <th>[06-07AM]</th>
+                                    <th>[07-08AM]</th>
+                                    <th>[08-09AM]</th>
+                                    <th>[09-10AM]</th>
+                                    <th>[10-11AM]</th>
+                                    <th>[11-12PM]</th>
+                                    <th>[12-01PM]</th>
+                                    <th>[01-02PM]</th>
+                                    <th>[02-03PM]</th>
+                                    <th>[03-04PM]</th>
+                                    <th>[04-05PM]</th>
+                                    <th>[05-06PM]</th>
+                                    <th>[06-07PM]</th>
+                                    <th>[07-08PM]</th>
+                                    <th>[08-09PM]</th>
+                                    <th>[09-10PM]</th>
+                                    <th>[10-11PM]</th>
+                                    <th>[11-12AM]</th>
+                                    <th>[Total]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+
+        <!--MjunoonTV-->
+        <div class="container-fluid" id="contmjunoontv">
+            <div class="row mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            MjunoonTV Renewal Traffic
+                        </h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="mjunoontvTable" class="table table-striped jambo_table bulk_action table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Report Date</th>
+                                    <th>Service Description</th>
+                                    <th>[00-01AM]</th>
+                                    <th>[01-02AM]</th>
+                                    <th>[02-03AM]</th>
+                                    <th>[03-04AM]</th>
+                                    <th>[04-05AM]</th>
+                                    <th>[05-06AM]</th>
+                                    <th>[06-07AM]</th>
+                                    <th>[07-08AM]</th>
+                                    <th>[08-09AM]</th>
+                                    <th>[09-10AM]</th>
+                                    <th>[10-11AM]</th>
+                                    <th>[11-12PM]</th>
+                                    <th>[12-01PM]</th>
+                                    <th>[01-02PM]</th>
+                                    <th>[02-03PM]</th>
+                                    <th>[03-04PM]</th>
+                                    <th>[04-05PM]</th>
+                                    <th>[05-06PM]</th>
+                                    <th>[06-07PM]</th>
+                                    <th>[07-08PM]</th>
+                                    <th>[08-09PM]</th>
+                                    <th>[09-10PM]</th>
+                                    <th>[10-11PM]</th>
+                                    <th>[11-12AM]</th>
+                                    <th>[Total]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+
+        <!--DroidGame-->
+        <div class="container-fluid" id="contdroidgame">
+            <div class="row mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            DroidGame Renewal Traffic
+                        </h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="droidgameTable" class="table table-striped jambo_table bulk_action table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Report Date</th>
+                                    <th>Service Description</th>
+                                    <th>[00-01AM]</th>
+                                    <th>[01-02AM]</th>
+                                    <th>[02-03AM]</th>
+                                    <th>[03-04AM]</th>
+                                    <th>[04-05AM]</th>
+                                    <th>[05-06AM]</th>
+                                    <th>[06-07AM]</th>
+                                    <th>[07-08AM]</th>
+                                    <th>[08-09AM]</th>
+                                    <th>[09-10AM]</th>
+                                    <th>[10-11AM]</th>
+                                    <th>[11-12PM]</th>
+                                    <th>[12-01PM]</th>
+                                    <th>[01-02PM]</th>
+                                    <th>[02-03PM]</th>
+                                    <th>[03-04PM]</th>
+                                    <th>[04-05PM]</th>
+                                    <th>[05-06PM]</th>
+                                    <th>[06-07PM]</th>
+                                    <th>[07-08PM]</th>
+                                    <th>[08-09PM]</th>
+                                    <th>[09-10PM]</th>
+                                    <th>[10-11PM]</th>
+                                    <th>[11-12AM]</th>
+                                    <th>[Total]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+
+        <!--MarathonOfWishes-->
+        <div class="container-fluid" id="contmarathonofwishes">
+            <div class="row mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            MarathonOfWishes Renewal Traffic
+                        </h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="marathonOfWishesTable" class="table table-striped jambo_table bulk_action table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Report Date</th>
+                                    <th>Service Description</th>
+                                    <th>[00-01AM]</th>
+                                    <th>[01-02AM]</th>
+                                    <th>[02-03AM]</th>
+                                    <th>[03-04AM]</th>
+                                    <th>[04-05AM]</th>
+                                    <th>[05-06AM]</th>
+                                    <th>[06-07AM]</th>
+                                    <th>[07-08AM]</th>
+                                    <th>[08-09AM]</th>
+                                    <th>[09-10AM]</th>
+                                    <th>[10-11AM]</th>
+                                    <th>[11-12PM]</th>
+                                    <th>[12-01PM]</th>
+                                    <th>[01-02PM]</th>
+                                    <th>[02-03PM]</th>
+                                    <th>[03-04PM]</th>
+                                    <th>[04-05PM]</th>
+                                    <th>[05-06PM]</th>
+                                    <th>[06-07PM]</th>
+                                    <th>[07-08PM]</th>
+                                    <th>[08-09PM]</th>
+                                    <th>[09-10PM]</th>
+                                    <th>[10-11PM]</th>
+                                    <th>[11-12AM]</th>
+                                    <th>[Total]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+
+        <!--WIN-->
+        <div class="container-fluid" id="contwin">
+            <div class="row mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            Win Renewal Traffic
+                        </h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="winTable" class="table table-striped jambo_table bulk_action table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Report Date</th>
+                                    <th>Service Description</th>
+                                    <th>[00-01AM]</th>
+                                    <th>[01-02AM]</th>
+                                    <th>[02-03AM]</th>
+                                    <th>[03-04AM]</th>
+                                    <th>[04-05AM]</th>
+                                    <th>[05-06AM]</th>
+                                    <th>[06-07AM]</th>
+                                    <th>[07-08AM]</th>
+                                    <th>[08-09AM]</th>
+                                    <th>[09-10AM]</th>
+                                    <th>[10-11AM]</th>
+                                    <th>[11-12PM]</th>
+                                    <th>[12-01PM]</th>
+                                    <th>[01-02PM]</th>
+                                    <th>[02-03PM]</th>
+                                    <th>[03-04PM]</th>
+                                    <th>[04-05PM]</th>
+                                    <th>[05-06PM]</th>
+                                    <th>[06-07PM]</th>
+                                    <th>[07-08PM]</th>
+                                    <th>[08-09PM]</th>
+                                    <th>[09-10PM]</th>
+                                    <th>[10-11PM]</th>
+                                    <th>[11-12AM]</th>
+                                    <th>[Total]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+
+    }
+</section>
+<!-- /.content -->
+
+<script>
+    $(document).ready(function () {
+        
+        var jsonActivationData;
+        var jsonRenealData;
+        var jsonChurnData;
+
+        var jsonActivationDetailsData;
+        var jsonRenealDetailsData;
+        var jsonChurnDetailsData;
+
+        //Hiding all traffic data grid
+        hidealldatagrid();
+
+        $('#dropdownMenuButton').on('click', function () {
+            var checkboxDropdown = $('#checkboxDropdown');
+            // Add a dynamic style property
+            // Check the current display property value
+            var currentDisplay = checkboxDropdown.css('display');
+
+            // Toggle the display property accordingly
+            if (currentDisplay === 'none') {
+                checkboxDropdown.css('display', 'block');
+            } else {
+                checkboxDropdown.css('display', 'none');
+            }
+        });
+
+        $(document).on('mousedown', function (event) {
+            var dropdownButton = $('#dropdownMenuButton');
+            var dropdownMenu = $('#checkboxDropdown');
+
+            if (!dropdownButton.is(event.target) && dropdownButton.has(event.target).length === 0 &&
+                !dropdownMenu.is(event.target) && dropdownMenu.has(event.target).length === 0) {
+                $('#checkboxDropdown').css('display', 'none');
+            }
+        });
+
+        // Define the filtertext variable
+        var filtertexts = [];
+
+        // Check if the user is in the "FunBoxManager" role
+        @if (User.IsInRole("FunBoxManager"))
+        {
+            // If the user is in the "FunBoxManager" role, assign "Funbox" to filtertext
+            @:filtertexts.push("FunBox");
+            @:filtertexts.push("Footballers");
+            @:filtertexts.push("SportsLocker");
+            @:filtertexts.push("MarathonOfWishes");
+            @:filtertexts.push("SuperGameRoll");
+        }
+        else
+        {
+            // If the user is not in the "FunBoxManager" role, assign an empty string to filtertext
+            @:filtertexts.push("");
+        }
+     
+
+        // Fetch JSON data dynamically
+        $.ajax({
+            url: '@Url.Action("GetCloud7GPServices", "Home")', // Replace with your actual action and controller names
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var jsonData = JSON.parse(data);
+
+                // Filter services that contain any of the filter texts
+                var filteredData = jsonData.filter(function (service) {
+                    // Check if any filter text matches the service's Text property
+                    return filtertexts.some(function (filtertext) {
+                            return service.Text.toLowerCase().includes(filtertext.toLowerCase());
+                    });
+                });
+
+                // Populate checkbox dropdown dynamically
+                var checkboxDropdown = $('#checkboxDropdown');
+
+                // Add "Check All" option
+                var checkAllCheckbox = $('<div class="form-check"><input class="form-check-input check-all" type="checkbox" id="checkAll"><label class="form-check-label" for="checkAll">Check All</label></div>');
+                checkboxDropdown.append(checkAllCheckbox);
+
+                $.each(filteredData, function (index, option) {
+                    var checkbox = $('<div class="form-check" ><input class="form-check-input" type="checkbox" value="' + option.Value + '" id="option' + option.Value + '"><label class="form-check-label" for="option' + option.Value + '">' + option.Text + '</label></div>');
+                    checkboxDropdown.append(checkbox);
+                });
+
+                // Event listener for "Check All" checkbox
+                $('#checkAll').change(function () {
+                    var checkboxes = $('.form-check-input').not('#checkAll');
+                    checkboxes.prop('checked', $(this).prop('checked'));
+                });
+
+            },
+            error: function () {
+                console.error('Failed to fetch checkbox options.');
+            }
+        });
+
+        // Add your logic to handle button click and checkbox selections
+        $('#submitBtn').click(function () {
+            // Collect selected checkboxes
+            var selectedOptions = [];
+            var selectedItemsText = [];
+
+            $('.dropdown-menu input:checked').each(function () {
+                selectedOptions.push($(this).val());
+                // Find the corresponding label element and get its text
+                var labelForCheckbox = $("label[for='" + $(this).attr('id') + "']");
+                selectedItemsText.push(labelForCheckbox.text());                  
+            });
+
+            //Hiding all traffic data grid
+            hidealldatagrid();
+
+
+            //Showing traffic data grid
+            selectedItemsText.forEach(function (text) {
+                // Compare each text with the desired text
+                if (text.includes("FunBox")) {                    
+                    $("#contfunbox").show();
+                } else if (text.includes("Footballers")) {
+                    $("#contfootballers").show();
+                } else if (text.includes("MXPlayer")) {
+                    $("#contmxplayer").show();
+                } else if (text.includes("eMagazine")) {
+                    $("#contemagazine").show();
+                } else if (text.includes("Magplus")) {
+                    $("#contmagplus").show();
+                } else if (text.includes("DroidGame")) {
+                    $("#contdroidgame").show();
+                } else if (text.includes("MjunoonTV")) {
+                    $("#contmjunoontv").show();
+                } else if (text.includes("MarathonOfWishes")) {
+                    $("#contmarathonofwishes").show();
+                } else if (text.includes("Win")) {
+                    $("#contwin").show();
+                }                
+                // Add more conditions for other texts and corresponding divs
+            });
+
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+
+            if (selectedOptions && startDate && endDate) {
+                
+                // Make an AJAX call to fetch activation data based on the selected checkboxes and date range
+                
+                $.ajax({
+                    url: '@Url.Action("GetActivationData", "Home")',
+                    type: 'GET',
+                    data: {
+                        serviceIds: selectedOptions.join(','), // Convert array to comma-separated string
+                        fromDate: startDate,
+                        toDate: endDate,
+                        dataType: 'Count'
+                    },
+                    dataType: 'json',
+                    success: function (activationData) {
+
+                        if (activationData == '[]'){
+                            return;
+                        }
+
+                         jsonActivationData = JSON.parse(activationData);
+
+                        jsonActivationData.sort(function (a, b) {
+                            var descriptionA = a.sDescription.toUpperCase(); // Convert to uppercase for case-insensitive sorting
+                            var descriptionB = b.sDescription.toUpperCase();
+
+                            if (descriptionA < descriptionB) {
+                                return -1;
+                            }
+                            if (descriptionA > descriptionB) {
+                                return 1;
+                            }
+                            return 0;
+                        });
+
+                       
+
+                        // Clear existing table rows
+                        $('#activationTable tbody').empty();
+                        var cumbase=0;
+                        var servicename;
+                        var totalbase;
+
+                        servicename = jsonActivationData[0].sDescription
+                        
+                        // Calculating total base 
+                        $.each(jsonActivationData, function (index, data) {                            
+
+                            if (servicename == data.sDescription) {
+                                
+                                cumbase += parseInt(data.sCount, 10);;
+                            }
+                            else{
+                                cumbase = parseInt(data.sCount, 10);
+                                servicename = data.sDescription;
+                            }
+                            
+                            data.totalBase = parseInt(data.totalBase, 10) + parseInt(cumbase, 10);
+                        });
+
+                        jsonActivationData.sort(function (a, b) {
+                            var dateA = new Date(a.SubscriptionDate);
+                            var dateB = new Date(b.SubscriptionDate);
+
+                            return dateA - dateB;
+                        });
+
+                        var totalSCount = 0; // Initialize total count variable
+                        var totalSChargeBDT = 0; // Initialize total charge variable
+
+                        // Populate the grid view with activation data
+                        $.each(jsonActivationData, function (index, data) {
+
+                            var row = '<tr><td>' + new Date(data.SubscriptionDate).toLocaleDateString() + '</td><td>' + data.sDescription + '</td><td>' + data.totalBase + '</td><td>' + data.sPrice + '</td><td>' + data.sCount + '</td><td>' + data.sChargeBDT + '</td></tr>';
+
+                            // Add data.sCount and data.sChargeBDT to the totals
+                            totalSCount += parseFloat(data.sCount);
+                            totalSChargeBDT += parseFloat(data.sChargeBDT);
+
+                            // Append the row to the table body
+                            $('#activationTable tbody').append(row);
+                        });
+
+                        // Add totals row at the end of the table
+                        var totalRow = '<tr><td colspan="4">Total</td><td>' + totalSCount + '</td><td>' + totalSChargeBDT + '</td></tr>';
+                        $('#activationTable tbody').append(totalRow);
+
+
+                        //// Populate the grid view with activation data
+                        //$.each(jsonActivationData, function (index, data) {                         
+
+                        //    var row = '<tr><td>' + new Date(data.SubscriptionDate).toLocaleDateString() + '</td><td>' + data.sDescription + '</td><td>' + data.totalBase + '</td><td>' + data.sPrice + '</td><td>' + data.sCount + '</td><td>' + data.sChargeBDT + '</td></tr>';
+                        //    $('#activationTable tbody').append(row);
+                        //});
+
+                    },
+                    error: function () {
+                        console.error('Failed to fetch activation data.');
+                    }
+                });
+
+                // Make an AJAX call to fetch renewal data based on the selected checkboxes and date range
+
+                $.ajax({
+                    url: '@Url.Action("GetRenewalData", "Home")',
+                    type: 'GET',
+                    data: {
+                        serviceIds: selectedOptions.join(','), // Convert array to comma-separated string
+                        fromDate: startDate,
+                        toDate: endDate,
+                        dataType: 'Count'
+                    },
+                    dataType: 'json',
+                    success: function (renealData) {
+
+                        if (renealData == '[]') {
+                            return;
+                        }
+
+                        jsonRenealData = JSON.parse(renealData);
+                        // Clear existing table rows
+                        $('#renewalTable tbody').empty();
+
+                        //// Populate the grid view with activation data
+                        //$.each(jsonRenealData, function (index, data) {
+                        //    var row = '<tr><td>' + new Date(data.RenewalDate).toLocaleDateString() + '</td><td>' + data.rDescription + '</td><td>' + data.rPrice + '</td><td>' + data.rCount + '</td><td>' + data.rChargeBDT + '</td></tr>';
+                        //    $('#renewalTable tbody').append(row);
+                        //});
+
+                        var totalSCount = 0; // Initialize total count variable
+                        var totalSChargeBDT = 0; // Initialize total charge variable
+
+                        // Populate the grid view with activation data
+                        $.each(jsonRenealData, function (index, data) {
+                            var row = '<tr><td>' + new Date(data.RenewalDate).toLocaleDateString() + '</td><td>' + data.rDescription + '</td><td>' + data.rPrice + '</td><td>' + data.rCount + '</td><td>' + data.rChargeBDT + '</td></tr>';
+
+                            // Add data.sCount and data.sChargeBDT to the totals
+                            totalSCount += parseFloat(data.rCount);
+                            totalSChargeBDT += parseFloat(data.rChargeBDT);
+
+                            // Append the row to the table body
+                            $('#renewalTable tbody').append(row);
+                        });
+
+                        // Add totals row at the end of the table
+                        var totalRow = '<tr><td colspan="3">Total</td><td>' + totalSCount + '</td><td>' + totalSChargeBDT + '</td></tr>';
+                        $('#renewalTable tbody').append(totalRow);
+
+                    },
+                    error: function () {
+                        console.error('Failed to fetch activation data.');
+                    }
+                });
+
+                // Make an AJAX call to fetch churned data based on the selected checkboxes and date range
+
+                $.ajax({
+                    url: '@Url.Action("GetChurnData", "Home")',
+                    type: 'GET',
+                    data: {
+                        serviceIds: selectedOptions.join(','), // Convert array to comma-separated string
+                        fromDate: startDate,
+                        toDate: endDate,
+                        dataType: 'Count'
+                    },
+                    dataType: 'json',
+                    success: function (churnData) {
+
+                        if (churnData == '[]') {
+                            return;
+                        }
+
+                        jsonChurnData = JSON.parse(churnData);
+
+
+                        jsonChurnData.sort(function (a, b) {
+                            var descriptionA = a.Description.toUpperCase(); // Convert to uppercase for case-insensitive sorting
+                            var descriptionB = b.Description.toUpperCase();
+
+                            if (descriptionA < descriptionB) {
+                                return -1;
+                            }
+                            if (descriptionA > descriptionB) {
+                                return 1;
+                            }
+                            return 0;
+                        });
+
+                        // Clear existing table rows
+                        $('#churnTable tbody').empty();
+
+                        var cumbase = 0;
+                        var servicename;
+                        var totalchurn;
+
+                        servicename = jsonChurnData[0].Description
+
+                        // Calculating total base
+                        $.each(jsonChurnData, function (index, data) {
+
+                            if (servicename == data.Description) {
+
+                                cumbase += parseInt(data.Churn, 10);;
+                            }
+                            else {
+                                cumbase = parseInt(data.Churn, 10);
+                                servicename = data.Description;
+                            }
+
+                            data.totalChurn = parseInt(data.totalChurn, 10) + parseInt(cumbase, 10);
+                        });
+
+                        jsonChurnData.sort(function (a, b) {
+                            var dateA = new Date(a.SubscriptionDate);
+                            var dateB = new Date(b.SubscriptionDate);
+
+                            return dateA - dateB;
+                        });
+
+                        //// Populate the grid view with activation data
+                        //$.each(jsonChurnData, function (index, data) {
+                        //    var row = '<tr><td>' + new Date(data.Churndate).toLocaleDateString() + '</td><td>' + data.Description + '</td><td>' + data.Churn + '</td><td>' + data.totalChurn + '</td></tr>';
+                        //    $('#churnTable tbody').append(row);
+                        //});
+
+                        var totalSCount = 0; // Initialize total count variable
+
+                        // Populate the grid view with activation data
+                        $.each(jsonChurnData, function (index, data) {
+                            var row = '<tr><td>' + new Date(data.Churndate).toLocaleDateString() + '</td><td>' + data.Description + '</td><td>' + data.Churn + '</td><td>' + data.totalChurn + '</td></tr>';
+
+                            // Add data.sCount and data.sChargeBDT to the totals
+                            totalSCount += parseFloat(data.Churn);
+
+                            // Append the row to the table body
+                            $('#churnTable tbody').append(row);
+                        });
+
+                        // Add totals row at the end of the table
+                        var totalRow = '<tr><td colspan="2">Total</td><td>' + totalSCount + '</td></tr>';
+                        $('#churnTable tbody').append(totalRow);
+
+                    },
+                    error: function () {
+                        console.error('Failed to fetch activation data.');
+                    }
+                });
+
+                // Make an AJAX call to fetch renewal Traffic data based on the selected checkboxes and date range
+
+                $.ajax({
+                    url: '@Url.Action("GetTrafficData", "Home")',
+                    type: 'GET',
+                    data: {
+                        serviceIds: selectedOptions.join(','), // Convert array to comma-separated string
+                        fromDate: startDate,
+                        toDate: endDate
+                    },
+                    dataType: 'json',
+                    success: function (trafficData) {
+
+                        jsonTrafficData = JSON.parse(trafficData);
+                        // Clear existing table rows
+                        $('#funboxTable tbody').empty();
+                        $('#mxplayerTable tbody').empty();
+                        $('#magplusTable tbody').empty();
+                        $('#footballersTable tbody').empty();
+                        $('#emagazineTable tbody').empty();
+
+                        $('#mjunoontvTable tbody').empty();
+                        $('#droidgameTable tbody').empty();
+
+                        $('#marathonOfWishesTable tbody').empty();
+                        $('#winTable tbody').empty();
+
+
+                        // Populate the grid view with funbox hourly renewal data
+                        $.each(jsonTrafficData[0], function (index, data) {
+                            var row = '<tr><td>' + new Date(data.ReportDate).toLocaleDateString()
+                                + '</td><td>' + data.Hour  
+                                + '</td><td>' + data.AM0001
+                                + '</td><td>' + data.AM0102
+                                + '</td><td>' + data.AM0203
+                                + '</td><td>' + data.AM0304
+                                + '</td><td>' + data.AM0405
+                                + '</td><td>' + data.AM0506
+                                + '</td><td>' + data.AM0607
+                                + '</td><td>' + data.AM0708
+                                + '</td><td>' + data.AM0809
+                                + '</td><td>' + data.AM0910
+                                + '</td><td>' + data.AM1011
+                                + '</td><td>' + data.PM1112
+                                + '</td><td>' + data.PM1201
+                                + '</td><td>' + data.PM0102
+                                + '</td><td>' + data.PM0203
+                                + '</td><td>' + data.PM0304
+                                + '</td><td>' + data.PM0405
+                                + '</td><td>' + data.PM0506
+                                + '</td><td>' + data.PM0607
+                                + '</td><td>' + data.PM0708
+                                + '</td><td>' + data.PM0809
+                                + '</td><td>' + data.PM0910
+                                + '</td><td>' + data.PM1011
+                                + '</td><td>' + data.AM1112
+                                + '</td><td>' + data.Total                                                            
+                                + '</td></tr>';
+                            $('#funboxTable tbody').append(row);
+                        });
+
+                        // Populate the grid view with mx player hourly renewal data
+                        $.each(jsonTrafficData[1], function (index, data) {
+                            var row = '<tr><td>' + new Date(data.ReportDate).toLocaleDateString()
+                                + '</td><td>' + data.Hour
+                                + '</td><td>' + data.AM0001
+                                + '</td><td>' + data.AM0102
+                                + '</td><td>' + data.AM0203
+                                + '</td><td>' + data.AM0304
+                                + '</td><td>' + data.AM0405
+                                + '</td><td>' + data.AM0506
+                                + '</td><td>' + data.AM0607
+                                + '</td><td>' + data.AM0708
+                                + '</td><td>' + data.AM0809
+                                + '</td><td>' + data.AM0910
+                                + '</td><td>' + data.AM1011
+                                + '</td><td>' + data.PM1112
+                                + '</td><td>' + data.PM1201
+                                + '</td><td>' + data.PM0102
+                                + '</td><td>' + data.PM0203
+                                + '</td><td>' + data.PM0304
+                                + '</td><td>' + data.PM0405
+                                + '</td><td>' + data.PM0506
+                                + '</td><td>' + data.PM0607
+                                + '</td><td>' + data.PM0708
+                                + '</td><td>' + data.PM0809
+                                + '</td><td>' + data.PM0910
+                                + '</td><td>' + data.PM1011
+                                + '</td><td>' + data.AM1112
+                                + '</td><td>' + data.Total
+                                + '</td></tr>';
+                            $('#mxplayerTable tbody').append(row);
+                        });
+
+                        // Populate the grid view with Mag plus hourly renewal data
+                        $.each(jsonTrafficData[2], function (index, data) {
+                            var row = '<tr><td>' + new Date(data.ReportDate).toLocaleDateString()
+                                + '</td><td>' + data.Hour
+                                + '</td><td>' + data.AM0001
+                                + '</td><td>' + data.AM0102
+                                + '</td><td>' + data.AM0203
+                                + '</td><td>' + data.AM0304
+                                + '</td><td>' + data.AM0405
+                                + '</td><td>' + data.AM0506
+                                + '</td><td>' + data.AM0607
+                                + '</td><td>' + data.AM0708
+                                + '</td><td>' + data.AM0809
+                                + '</td><td>' + data.AM0910
+                                + '</td><td>' + data.AM1011
+                                + '</td><td>' + data.PM1112
+                                + '</td><td>' + data.PM1201
+                                + '</td><td>' + data.PM0102
+                                + '</td><td>' + data.PM0203
+                                + '</td><td>' + data.PM0304
+                                + '</td><td>' + data.PM0405
+                                + '</td><td>' + data.PM0506
+                                + '</td><td>' + data.PM0607
+                                + '</td><td>' + data.PM0708
+                                + '</td><td>' + data.PM0809
+                                + '</td><td>' + data.PM0910
+                                + '</td><td>' + data.PM1011
+                                + '</td><td>' + data.AM1112
+                                + '</td><td>' + data.Total
+                                + '</td></tr>';
+                            $('#magplusTable tbody').append(row);
+                        });
+
+                        // Populate the grid view with footballers live  hourly renewal data
+                        $.each(jsonTrafficData[3], function (index, data) {
+                            var row = '<tr><td>' + new Date(data.ReportDate).toLocaleDateString()
+                                + '</td><td>' + data.Hour
+                                + '</td><td>' + data.AM0001
+                                + '</td><td>' + data.AM0102
+                                + '</td><td>' + data.AM0203
+                                + '</td><td>' + data.AM0304
+                                + '</td><td>' + data.AM0405
+                                + '</td><td>' + data.AM0506
+                                + '</td><td>' + data.AM0607
+                                + '</td><td>' + data.AM0708
+                                + '</td><td>' + data.AM0809
+                                + '</td><td>' + data.AM0910
+                                + '</td><td>' + data.AM1011
+                                + '</td><td>' + data.PM1112
+                                + '</td><td>' + data.PM1201
+                                + '</td><td>' + data.PM0102
+                                + '</td><td>' + data.PM0203
+                                + '</td><td>' + data.PM0304
+                                + '</td><td>' + data.PM0405
+                                + '</td><td>' + data.PM0506
+                                + '</td><td>' + data.PM0607
+                                + '</td><td>' + data.PM0708
+                                + '</td><td>' + data.PM0809
+                                + '</td><td>' + data.PM0910
+                                + '</td><td>' + data.PM1011
+                                + '</td><td>' + data.AM1112
+                                + '</td><td>' + data.Total
+                                + '</td></tr>';
+                            $('#footballersTable tbody').append(row);
+                        });
+
+                        // Populate the grid view with emagazine  hourly renewal data
+                        $.each(jsonTrafficData[4], function (index, data) {
+                            var row = '<tr><td>' + new Date(data.ReportDate).toLocaleDateString()
+                                + '</td><td>' + data.Hour
+                                + '</td><td>' + data.AM0001
+                                + '</td><td>' + data.AM0102
+                                + '</td><td>' + data.AM0203
+                                + '</td><td>' + data.AM0304
+                                + '</td><td>' + data.AM0405
+                                + '</td><td>' + data.AM0506
+                                + '</td><td>' + data.AM0607
+                                + '</td><td>' + data.AM0708
+                                + '</td><td>' + data.AM0809
+                                + '</td><td>' + data.AM0910
+                                + '</td><td>' + data.AM1011
+                                + '</td><td>' + data.PM1112
+                                + '</td><td>' + data.PM1201
+                                + '</td><td>' + data.PM0102
+                                + '</td><td>' + data.PM0203
+                                + '</td><td>' + data.PM0304
+                                + '</td><td>' + data.PM0405
+                                + '</td><td>' + data.PM0506
+                                + '</td><td>' + data.PM0607
+                                + '</td><td>' + data.PM0708
+                                + '</td><td>' + data.PM0809
+                                + '</td><td>' + data.PM0910
+                                + '</td><td>' + data.PM1011
+                                + '</td><td>' + data.AM1112
+                                + '</td><td>' + data.Total
+                                + '</td></tr>';
+                            $('#emagazineTable tbody').append(row);
+                        });
+
+                        // Populate the grid view with MjunoonTV  hourly renewal data
+                        $.each(jsonTrafficData[5], function (index, data) {
+                            var row = '<tr><td>' + new Date(data.ReportDate).toLocaleDateString()
+                                + '</td><td>' + data.Hour
+                                + '</td><td>' + data.AM0001
+                                + '</td><td>' + data.AM0102
+                                + '</td><td>' + data.AM0203
+                                + '</td><td>' + data.AM0304
+                                + '</td><td>' + data.AM0405
+                                + '</td><td>' + data.AM0506
+                                + '</td><td>' + data.AM0607
+                                + '</td><td>' + data.AM0708
+                                + '</td><td>' + data.AM0809
+                                + '</td><td>' + data.AM0910
+                                + '</td><td>' + data.AM1011
+                                + '</td><td>' + data.PM1112
+                                + '</td><td>' + data.PM1201
+                                + '</td><td>' + data.PM0102
+                                + '</td><td>' + data.PM0203
+                                + '</td><td>' + data.PM0304
+                                + '</td><td>' + data.PM0405
+                                + '</td><td>' + data.PM0506
+                                + '</td><td>' + data.PM0607
+                                + '</td><td>' + data.PM0708
+                                + '</td><td>' + data.PM0809
+                                + '</td><td>' + data.PM0910
+                                + '</td><td>' + data.PM1011
+                                + '</td><td>' + data.AM1112
+                                + '</td><td>' + data.Total
+                                + '</td></tr>';
+                            $('#mjunoontvTable tbody').append(row);
+                        });
+
+                        // Populate the grid view with DroidGame  hourly renewal data
+                        $.each(jsonTrafficData[6], function (index, data) {
+                            var row = '<tr><td>' + new Date(data.ReportDate).toLocaleDateString()
+                                + '</td><td>' + data.Hour
+                                + '</td><td>' + data.AM0001
+                                + '</td><td>' + data.AM0102
+                                + '</td><td>' + data.AM0203
+                                + '</td><td>' + data.AM0304
+                                + '</td><td>' + data.AM0405
+                                + '</td><td>' + data.AM0506
+                                + '</td><td>' + data.AM0607
+                                + '</td><td>' + data.AM0708
+                                + '</td><td>' + data.AM0809
+                                + '</td><td>' + data.AM0910
+                                + '</td><td>' + data.AM1011
+                                + '</td><td>' + data.PM1112
+                                + '</td><td>' + data.PM1201
+                                + '</td><td>' + data.PM0102
+                                + '</td><td>' + data.PM0203
+                                + '</td><td>' + data.PM0304
+                                + '</td><td>' + data.PM0405
+                                + '</td><td>' + data.PM0506
+                                + '</td><td>' + data.PM0607
+                                + '</td><td>' + data.PM0708
+                                + '</td><td>' + data.PM0809
+                                + '</td><td>' + data.PM0910
+                                + '</td><td>' + data.PM1011
+                                + '</td><td>' + data.AM1112
+                                + '</td><td>' + data.Total
+                                + '</td></tr>';
+                            $('#droidgameTable tbody').append(row);
+                        });
+
+                        // Populate the grid view with DroidGame  hourly renewal data
+                        $.each(jsonTrafficData[7], function (index, data) {
+                            var row = '<tr><td>' + new Date(data.ReportDate).toLocaleDateString()
+                                + '</td><td>' + data.Hour
+                                + '</td><td>' + data.AM0001
+                                + '</td><td>' + data.AM0102
+                                + '</td><td>' + data.AM0203
+                                + '</td><td>' + data.AM0304
+                                + '</td><td>' + data.AM0405
+                                + '</td><td>' + data.AM0506
+                                + '</td><td>' + data.AM0607
+                                + '</td><td>' + data.AM0708
+                                + '</td><td>' + data.AM0809
+                                + '</td><td>' + data.AM0910
+                                + '</td><td>' + data.AM1011
+                                + '</td><td>' + data.PM1112
+                                + '</td><td>' + data.PM1201
+                                + '</td><td>' + data.PM0102
+                                + '</td><td>' + data.PM0203
+                                + '</td><td>' + data.PM0304
+                                + '</td><td>' + data.PM0405
+                                + '</td><td>' + data.PM0506
+                                + '</td><td>' + data.PM0607
+                                + '</td><td>' + data.PM0708
+                                + '</td><td>' + data.PM0809
+                                + '</td><td>' + data.PM0910
+                                + '</td><td>' + data.PM1011
+                                + '</td><td>' + data.AM1112
+                                + '</td><td>' + data.Total
+                                + '</td></tr>';
+                            $('#marathonOfWishesTable tbody').append(row);
+                        });
+
+                        // Populate the grid view with DroidGame  hourly renewal data
+                        $.each(jsonTrafficData[7], function (index, data) {
+                            var row = '<tr><td>' + new Date(data.ReportDate).toLocaleDateString()
+                                + '</td><td>' + data.Hour
+                                + '</td><td>' + data.AM0001
+                                + '</td><td>' + data.AM0102
+                                + '</td><td>' + data.AM0203
+                                + '</td><td>' + data.AM0304
+                                + '</td><td>' + data.AM0405
+                                + '</td><td>' + data.AM0506
+                                + '</td><td>' + data.AM0607
+                                + '</td><td>' + data.AM0708
+                                + '</td><td>' + data.AM0809
+                                + '</td><td>' + data.AM0910
+                                + '</td><td>' + data.AM1011
+                                + '</td><td>' + data.PM1112
+                                + '</td><td>' + data.PM1201
+                                + '</td><td>' + data.PM0102
+                                + '</td><td>' + data.PM0203
+                                + '</td><td>' + data.PM0304
+                                + '</td><td>' + data.PM0405
+                                + '</td><td>' + data.PM0506
+                                + '</td><td>' + data.PM0607
+                                + '</td><td>' + data.PM0708
+                                + '</td><td>' + data.PM0809
+                                + '</td><td>' + data.PM0910
+                                + '</td><td>' + data.PM1011
+                                + '</td><td>' + data.AM1112
+                                + '</td><td>' + data.Total
+                                + '</td></tr>';
+                            $('#winTable tbody').append(row);
+                        });
+                    },
+                    error: function () {
+                        console.error('Failed to fetch activation data.');
+                    }
+                });
+
+            }
+
+
+        });
+
+        $('#expdataBtn').click(function () {
+
+            // Get the current date and time
+            var currentDate = new Date();
+            var formattedDate = currentDate.toISOString().replace(/[-T:.Z]/g, '');
+
+            // Export data to Excel
+            exportToExcel(jsonActivationData, 'GP_Activation_data_' + formattedDate + '.xlsx');
+
+            exportToExcel(jsonRenealData, 'GP_Renewal_data_' + formattedDate + '.xlsx');
+
+            exportToExcel(jsonChurnData, 'GP_Deactivation_data_' + formattedDate + '.xlsx');
+        });
+
+
+        //Exporting Activation, deactivation and renewal details data
+
+        $('#expdetailsdataBtn').click(function () {         
+
+            LoadDetailsData();
+            ExportDetailsData();
+        });
+
+        function LoadDetailsData() {
+
+                // Collect selected checkboxes
+                var selectedOptions = [];
+                
+                $('.dropdown-menu input:checked').each(function () {
+                    selectedOptions.push($(this).val());
+                });
+
+                var startDate = $('#startDate').val();
+                var endDate = $('#endDate').val();
+
+                if (selectedOptions && startDate && endDate) {
+                    $.ajax({
+                        url: '@Url.Action("GetActivationData", "Home")',
+                        type: 'GET',
+                        data: {
+                            serviceIds: selectedOptions.join(','), // Convert array to comma-separated string
+                            fromDate: startDate,
+                            toDate: endDate,
+                            dataType: 'details'
+                        },
+                        dataType: 'json',
+                        success: function (activationDetailsData) {
+
+                            jsonActivationDetailsData = JSON.parse(activationDetailsData);
+
+                            jsonActivationDetailsData.sort(function (a, b) {
+                                var descriptionA = a.sDescription.toUpperCase(); // Convert to uppercase for case-insensitive sorting
+                                var descriptionB = b.sDescription.toUpperCase();
+
+                                if (descriptionA < descriptionB) {
+                                    return -1;
+                                }
+                                if (descriptionA > descriptionB) {
+                                    return 1;
+                                }
+                                return 0;
+                            });
+                        },
+                        error: function () {
+                            console.error('Failed to fetch activation data.');
+                        }
+                    });
+
+                    $.ajax({
+                        url: '@Url.Action("GetRenewalData", "Home")',
+                        type: 'GET',
+                        data: {
+                            serviceIds: selectedOptions.join(','), // Convert array to comma-separated string
+                            fromDate: startDate,
+                            toDate: endDate,
+                            dataType: 'details'
+                        },
+                        dataType: 'json',
+                        success: function (renealDetailsData) {
+
+                            jsonRenealDetailsData = JSON.parse(renealDetailsData);
+                        },
+                        error: function () {
+                            console.error('Failed to fetch activation data.');
+                        }
+                    });
+
+                    $.ajax({
+                        url: '@Url.Action("GetChurnData", "Home")',
+                        type: 'GET',
+                        data: {
+                            serviceIds: selectedOptions.join(','), // Convert array to comma-separated string
+                            fromDate: startDate,
+                            toDate: endDate,
+                            dataType: 'details'
+                        },
+                        dataType: 'json',
+                        success: function (churnDetailsData) {
+
+                            jsonChurnDetailsData = JSON.parse(churnDetailsData);
+
+
+                            jsonChurnDetailsData.sort(function (a, b) {
+                                var descriptionA = a.Description.toUpperCase(); // Convert to uppercase for case-insensitive sorting
+                                var descriptionB = b.Description.toUpperCase();
+
+                                if (descriptionA < descriptionB) {
+                                    return -1;
+                                }
+                                if (descriptionA > descriptionB) {
+                                    return 1;
+                                }
+                                return 0;
+                            });
+                        },
+                        error: function () {
+                            console.error('Failed to fetch activation data.');
+                        }
+                    });
+                }
+         }
+
+        function ExportDetailsData() {
+            // Get the current date and time
+            var currentDate = new Date();
+            var formattedDate = currentDate.toISOString().replace(/[-T:.Z]/g, '');
+
+            // Export data to Excel
+            if (jsonActivationDetailsData != undefined) {
+                exportToExcel(jsonActivationDetailsData, 'GP_Activation_Details_Data_' + formattedDate + '.xlsx');
+            }
+            if (jsonRenealDetailsData != undefined) {
+                exportToExcel(jsonRenealDetailsData, 'GP_Renewal_Details_Data_' + formattedDate + '.xlsx');
+            }
+            if (jsonChurnDetailsData != undefined) {
+                exportToExcel(jsonChurnDetailsData, 'GP_Deactivation_Details_Data_' + formattedDate + '.xlsx');
+            }
+        }
+
+        // Function to export data to Excel
+        function exportToExcel(data,filename) {
+            // Convert data to worksheet
+            var ws = XLSX.utils.json_to_sheet(data);
+
+            // Create a workbook with a single worksheet
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+            // Save the workbook as an Excel file
+            XLSX.writeFile(wb, filename);
+        }
+
+        function hidealldatagrid() {
+            $("#contfunbox").hide();
+            $("#contmxplayer").hide();
+            $("#contmagplus").hide();
+            $("#contfootballers").hide();
+            $("#contemagazine").hide();
+            $("#contmjunoontv").hide();
+            $("#contdroidgame").hide();
+            $("#contmarathonofwishes").hide()
+            $("#contwin").hide()
+        }
+
+
+       
+    });
+
+ 
+</script>
+

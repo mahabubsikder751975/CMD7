@@ -1,0 +1,365 @@
+﻿<!-- Main content -->
+<section class="content">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Banglalink Data Editor</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/Home/Index">Home</a></li>
+                        <li class="breadcrumb-item active">Admin Panel/Banglalink</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="txtMsisdn">MSISDN Number:</label>
+                    <input type="text" class="form-control" id="txtMsisdn">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="reportDate">Report Date:</label>
+                    <input type="date" class="form-control" id="reportDate">
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="container-fluid">
+                        <div class="row mt-4">
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-primary" id="submitBtn">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+    <!-- /.container-fluid -->
+
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div><button type="submit" class="btn btn-primary" style="float:right" id="expdataBtn">Export to Excel</button></div>
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Subscription Data</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body tableContainer">
+                    <table id="subscriptionTable" class="table table-striped jambo_table bulk_action table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>MSISDN</th>
+                                <th>Service Name</th>
+                                <th>Service Plan</th>
+                                <th>FirstActivation Date & Time</th>
+                                <th>LastActivation Date & Time</th>                                
+                                <th>Expiry Date</th>
+                                <th>Cancellation Date</th>
+                                <th>Cancellation Reason</th>
+                                <th>Activation Channel</th>
+                                <th>Current Status</th>
+                                <th>DND Status</th>
+                                <th>NextRenewal</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Last 30 Days Renewal History</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body tableContainer">
+                    <table id="renewalDetailssTable" class="table table-striped jambo_table bulk_action table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>MSISDN</th>
+                                <th>Service Id</th>
+                                <th>Service Name</th>
+                                <th>Subscription Type</th>
+                                <th>Total Amount Charged</th>
+                                <th>Subscription Period</th>
+                                <th>Renewal Status</th>
+                                <th>Charging Type</th>
+                                <th>Description</th>
+                                <th>Currency</th>
+                                <th>Process Date</th>
+                                <th>LastUpdated</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+
+
+</section>
+<!-- /.content -->
+
+<script>
+    $(document).ready(function () {
+
+        var jsonActivationData;
+        var jsonRenealData;
+        var jsonChurnData;
+
+        var jsonActivationDetailsData;
+        var jsonRenealDetailsData;
+        var jsonChurnDetailsData;
+
+        var msisdn;
+        var reportDate;
+
+        // Get the current date in the format "YYYY-MM-DD"
+        var currentDate = new Date().toISOString().split('T')[0];
+
+        // Set the value of the date input control to the current date
+        document.getElementById('reportDate').value = currentDate;
+
+        // Add your logic to handle button click and checkbox selections
+        $('#submitBtn').click(function () {
+
+
+            msisdn = $('#txtMsisdn').val();
+            reportDate = $('#reportDate').val();
+
+            if (msisdn && reportDate) {
+
+                // Make an AJAX call to fetch subscription data based on the selected MSISDN
+
+                $.ajax({
+                    url: '@Url.Action("GetSubscriptionDetailsData", "Banglalink")',
+                    type: 'GET',
+                    data: {
+                        msisdn: msisdn,
+                        reportDate: reportDate,
+                    },
+                    dataType: 'json',
+                    success: function (subscriptionData) {
+
+                        jsonSubscriptionData = JSON.parse(subscriptionData);
+
+                        //jsonSubscriptionData.sort(function (a, b) {
+                        //    var descriptionA = a.ServiceName.toUpperCase(); // Convert to uppercase for case-insensitive sorting
+                        //    var descriptionB = b.ServiceName.toUpperCase();
+
+                        //    if (descriptionA < descriptionB) {
+                        //        return -1;
+                        //    }
+                        //    if (descriptionA > descriptionB) {
+                        //        return 1;
+                        //    }
+                        //    return 0;
+                        //});
+
+
+
+                        // Clear existing table rows
+                        $('#subscriptionTable tbody').empty();
+
+                        // Populate the grid view with activation data
+                        $.each(jsonSubscriptionData, function (index, data) {
+
+                            var row = '<tr><td>' + data.MSISDN + '</td><td>' + data.ServiceName + '</td><td>' + data.ServicePlan + '</td><td>' + (data.FirstActivationDate) + '</td><td>' + (data.LastActivationDate) + '</td><td>'  + formatDate(data.ExpiryDate) + '</td><td>' + formatDate(data.CancellationDate) + '</td><td>' + data.CancelSource + '</td><td>' + data.ActivationChannel + '</td><td>' + data.CurrentStatus + '</td><td>' + data.DNDStatus + '</td><td>' + formatDate(data.NextRenewal) + '</td><td><div class="button-container"><button type="button" onclick="deactiveMSISDN(\'' + data.ServiceId + '\',\'' + data.SubscriptionId + '\')"  class="btn btn-primary" id="deactivateBtn">Deactivate</button><button type="button" onclick="dndMSISDN(\'' + data.ServiceId + '\')"  class="btn btn-primary" id="dndBtn">DND</button></div></td></tr>';
+
+                            function formatDate(dateValue) {
+                                return dateValue ? new Date(dateValue).toLocaleDateString() : '';
+                            }
+
+                            $('#subscriptionTable tbody').append(row);
+                        });
+
+                    },
+                    error: function () {
+                        console.error('Failed to fetch activation data.');
+                    }
+                });
+
+
+                // Make an AJAX call to fetch last 30 days renewal data based on the selected MSISDN
+
+                $.ajax({
+                    url: '@Url.Action("GetRenewalDetailsData", "Banglalink")',
+                    type: 'GET',
+                    data: {
+                        msisdn: msisdn,
+                        reportDate: reportDate,
+                    },
+                    dataType: 'json',
+                    success: function (renealDetailsData) {
+
+                        jsonRenealDetailsData = JSON.parse(renealDetailsData);
+
+
+                        // Clear existing table rows
+                        $('#renewalDetailssTable tbody').empty();
+
+                        // Populate the grid view with activation data
+                        $.each(jsonRenealDetailsData, function (index, data) {
+
+
+                            var row = '<tr><td>' + data.MSISDN + '</td><td>' + data.ServiceId + '</td><td>' + data.ServiceName + '</td><td>' + data.SubscriptionType + '</td><td>' + data.TotalAmountCharged + '</td><td>' + data.SubscriptionPeriod + '</td><td>' + data.RenewalStatus + '</td><td>' + data.ChargingType + '</td><td>' + data.Description + '</td><td>' + data.Currency + '</td><td>' + formatDate(data.ProcessDate) + '</td><td>' + formatDate(data.LastUpdated) + '</td></tr>';
+
+                            function formatDate(dateValue) {
+                                return dateValue ? new Date(dateValue).toLocaleDateString() : '';
+                            }
+
+                            $('#renewalDetailssTable tbody').append(row);
+                        });
+
+                    },
+                    error: function () {
+                        console.error('Failed to fetch activation data.');
+                    }
+                });
+
+            }
+
+
+        });
+
+        $('#expdataBtn').click(function () {
+            msisdn = $('#txtMsisdn').val();
+            // Get the current date and time
+            var currentDate = new Date();
+            var formattedDate = currentDate.toISOString().replace(/[-T:.Z]/g, '');
+
+            // Export data to Excel
+            exportToExcel(jsonSubscriptionData, msisdn + '_BL_Subscription_data_' + formattedDate + '.xlsx');
+            exportToExcel(jsonRenealDetailsData, msisdn + '_BL_RenealDetails_data_' + formattedDate + '.xlsx');
+
+        });
+
+
+        // Function to export data to Excel
+        function exportToExcel(data, filename) {
+            // Convert data to worksheet
+            var ws = XLSX.utils.json_to_sheet(data);
+
+            // Create a workbook with a single worksheet
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+            // Save the workbook as an Excel file
+            XLSX.writeFile(wb, filename);
+        }
+    });
+
+
+    function deactiveMSISDN(ServiceId, SubscriptionId) {
+
+        // Prompt the user for deactivation reason
+        var deactivationReason = prompt("Please provide a reason for deactivation:");
+
+        // Check if the user provided a reason
+        if (deactivationReason !== null) {
+            msisdn = $('#txtMsisdn').val();
+            $.ajax({
+                url: '@Url.Action("DeactivateMSISDNByServiceId", "Banglalink")',
+                type: 'GET',
+                data: {
+                    msisdn: msisdn,
+                    serviceId: ServiceId,
+                    subscriptionId: SubscriptionId,
+                    reason: deactivationReason
+                },
+                dataType: 'json',
+                success: function (deactivated) {
+                    //jsondeactivated = JSON.parse(deactivated);
+                    alert(deactivated);
+                    //if (jsondeactivated==1) {
+                    //    // JavaScript code to programmatically trigger the button click
+                    //    var button = document.getElementById('submitBtn');
+                    //    if (button) {
+                    //        console.log('Button found');
+                    //        button.click();
+                    //    }
+                    //    alert("Deactivation succeeded");
+                    //}
+                },
+                error: function () {
+                    console.error('Failed to process deactivation.');
+                    alert("Failed to process deactivation.");
+                }
+            });
+        }
+        else {
+            // User canceled the prompt, do nothing or handle accordingly
+            alert("Deactivation process canceled");
+        }
+    }
+
+    function dndMSISDN(ServiceId, SubscriptionId) {
+
+        // Display a confirmation dialog
+        var confirmed = window.confirm('Are you sure you want to perform this action?');
+
+        // Check the user's response
+        if (confirmed) {
+            msisdn = $('#txtMsisdn').val();
+            $.ajax({
+                url: '@Url.Action("DNDMSISDNByServiceId", "Banglalink")',
+                type: 'GET',
+                data: {
+                    msisdn: msisdn,
+                    serviceId: ServiceId,
+                    subscriptionId: SubscriptionId
+                },
+                dataType: 'json',
+                success: function (deactivated) {
+                    jsondeactivated = JSON.parse(deactivated);
+                    if (jsondeactivated == 1) {
+                        // JavaScript code to programmatically trigger the button click
+                        var button = document.getElementById('submitBtn');
+                        if (button) {
+                            console.log('Button found');
+                            button.click();
+                        }
+                        alert("DND succeeded");
+                    }
+                },
+                error: function () {
+                    console.error('Failed to DND.');
+                }
+            });
+        }
+        else {
+            // User canceled the prompt, do nothing or handle accordingly
+            alert("DND process canceled");
+        }
+    }
+
+</script>
+

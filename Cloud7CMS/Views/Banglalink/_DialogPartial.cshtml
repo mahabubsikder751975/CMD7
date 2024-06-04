@@ -1,0 +1,213 @@
+﻿<style>
+
+    .modal-dialog {
+        max-width: 800px; /* Adjust the width as needed */
+    }
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<!-- _DialogPartial.cshtml -->
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" style="text-align:center">Live Renewal Progress</h5>
+            @* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>*@
+        </div>
+        <div class="modal-body">
+            <!-- Your dialog content goes here -->
+            <div>
+                <div id="RenewalContainer" class="container">
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="closeDialogBtn" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    var newTrafficData;
+    var newSuccessData;
+    var newLabel;
+
+    //const canvas = document.getElementById('myChart').getContext('2d');
+
+    var canvas = null; // Initialize canvas variable to null
+
+    // Check if canvas is null or not
+    if (!canvas) {
+        // If canvas is null, initialize it
+        canvas = document.getElementById('myChart').getContext('2d');
+    }
+
+    canvas.height = 75;
+
+    //Configuration variables
+    var updateInterval = @ViewBag.UpdateInterval //in 3 sec
+    var numberElements = 60;
+    // Variable to store the timeout ID
+    var timeoutId;
+
+    //Globals
+    var updateCount = 0;
+    var now = new Date();
+    label = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+    var labels = [
+        label
+    ];
+
+    var data = {
+        labels: labels,
+        datasets: [{
+            label: 'Renewal Sucess',
+            borderColor: 'rgb(0, 200, 0)',
+            data: [0]
+        }, {
+            label: 'Renewal Traffic',
+            borderColor: 'rgb(0, 99, 132)',
+            data: [10]
+        }]
+    };
+
+    var config = {
+        type: 'line',
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Cloud 7 Service Renewal Process Monitor',
+                }
+            },
+            legend: {
+                display: true,
+                onHover: function (event, legendItem) {
+                    document.getElementById("myChart").style.cursor = 'pointer';
+                },
+            },
+            maintainAspectRatio: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Time'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Count'
+                    }
+                }
+            }
+        }
+    };
+
+    var myChart = null; // Initialize myChart variable to null
+
+    // Check if myChart is null or not
+    if (!myChart) {
+        // If myChart is null, initialize it
+        myChart = new Chart(
+            canvas,
+            config
+        );
+    }
+
+
+
+
+    // function to update the chart
+    function addData(chart, label, data) {
+        if (data['Traffic']) {
+            chart.data.labels.push(label);
+            chart.data.datasets[1].data.push(data['Traffic']);
+            chart.data.datasets[0].data.push(data['Success']);
+            //chart.data.labels.push(label);
+            //chart.data.datasets.forEach((dataset) => {dataset.data.push(data);});
+            if (updateCount > numberElements) {
+                chart.data.labels.shift();
+                chart.data.datasets[0].data.shift();
+                chart.data.datasets[1].data.shift();
+            }
+            else {
+                updateCount++;
+            }
+            chart.update();
+        }
+
+    }
+
+    // randomly add new data
+    function updateData() {
+        GetLiveData();
+
+        var data = {
+            "Traffic": newTrafficData,
+            "Success": newSuccessData
+        }
+        addData(myChart, newLabel, data);
+        // Set the timeout for the next iteration and store the timeout ID
+        timeoutId = setTimeout(updateData, updateInterval);
+    }
+
+    var ajaxRequest;
+
+    updateData();
+
+    // Variable to store the AJAX request object
+  
+
+    function GetLiveData() {
+
+        ajaxRequest = $.ajax({
+            url: '@Url.Action("GetFunBoxLiveData", "Banglalink")',
+            type: 'GET',
+            data: {
+                productName: 'Funbox'
+            },
+            dataType: 'json',
+            success: function (livedata) {
+
+                if (livedata) {
+                    jsonlivedata = JSON.parse(livedata);
+                    $.each(jsonlivedata, function (index, data) {
+                        newTrafficData = data.TotalTraffic;
+                        newSuccessData = data.TotalSuccess;
+                        newLabel = data.ReportHour + ":" + data.ReportMinute + ":" + data.ReportSecond;
+                    });
+                }
+            },
+            error: function () {
+                console.error('Failed to fetch live data.');
+            }
+        });
+        
+    }
+
+
+    // Event listener for close button click
+    $(document).ready(function () {        
+        // Add click event listener to the close button within the dialog box
+        $('#closeDialogBtn').on('click', function () {            
+            // Close the modal and cancel the AJAX call            
+            clearTimeout(timeoutId);
+            document.getElementById('dialogModal').classList.remove('show');
+            ajaxRequest.abort();
+        });
+    });
+
+
+</script>
